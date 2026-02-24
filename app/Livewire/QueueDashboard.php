@@ -146,6 +146,9 @@ class QueueDashboard extends Component
 
     public function render()
     {
-        return view('livewire.queue-dashboard');
+        return view('livewire.queue-dashboard')
+            ->layout('layouts.admin', [
+                'title' => 'Dashboard – ' . $this->queue->name . ' – ' . $this->queue->business->name,
+            ]);
     }
 }
