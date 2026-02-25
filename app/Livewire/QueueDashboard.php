@@ -44,9 +44,6 @@ class QueueDashboard extends Component
             ->first();
     }
 
-    /**
-     * Call the next customer in line.
-     */
     public function next(): void
     {
         $nextTicket = $this->queue
@@ -60,28 +57,34 @@ class QueueDashboard extends Component
             return;
         }
 
-        // Mark as served
-        $nextTicket->update(['status' => 'served']);
+        try {
+            // Mark as served
+            $nextTicket->update(['status' => 'served']);
 
-        // Decrement position of all remaining waiting tickets
-        $this->queue->tickets()
-            ->where('status', 'waiting')
-            ->where('position', '>', $nextTicket->position)
-            ->decrement('position');
+            // Decrement position of all remaining waiting tickets
+            $this->queue->tickets()
+                ->where('status', 'waiting')
+                ->where('position', '>', $nextTicket->position)
+                ->decrement('position');
 
-        // Advance queue's current_position
-        $this->queue->increment('current_position');
-        $this->queue->refresh();
+            // Advance queue's current_position
+            $this->queue->increment('current_position');
+            $this->queue->refresh();
 
-        $this->message = "Called #{$nextTicket->id}" . ($nextTicket->name ? " — {$nextTicket->name}" : '');
+            $this->message = "Called #{$nextTicket->id}" . ($nextTicket->name ? " — {$nextTicket->name}" : '');
 
-        // Broadcast so join pages update positions instantly
-        broadcast(new QueueUpdated($this->queue));
+            $this->refreshTickets();
 
-        $this->refreshTickets();
+            // Broadcast to OTHERS so join pages update. 
+            // We use toOthers() to avoid triggering our own Echo listener and double-refreshing.
+            broadcast(new QueueUpdated($this->queue))->toOthers();
 
-        // 🔔 Send push notifications to the upcoming people
-        $this->notifyUpcoming();
+            // 🔔 Send push notifications
+            $this->notifyUpcoming();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("QueueDashboard error in next(): " . $e->getMessage());
+            $this->message = "Error: " . $e->getMessage();
+        }
     }
 
     /**
@@ -134,34 +137,42 @@ class QueueDashboard extends Component
         broadcast(new QueueUpdated($this->queue));
 
         $this->refreshTickets();
+
+        // 🔔 Send push notifications as positions changed
+        $this->notifyUpcoming();
     }
 
     public function markServed($ticketId)
-{
-    $ticket = Ticket::findOrFail($ticketId);
+    {
+        $ticket = Ticket::findOrFail($ticketId);
 
-    if ($ticket->queue_id !== $this->queue->id || $ticket->status !== 'waiting') {
-        return;
-    }
+        if ($ticket->queue_id !== $this->queue->id || $ticket->status !== 'waiting') {
+            return;
+        }
 
-    $ticket->update(['status' => 'served']);
+        $savedPosition = $ticket->position;
 
-    // Only shift positions if this was NOT the first ticket
-    // (if it was first, "Call Next" already handled shifting)
-    if ($ticket->position > 1) {
+        $ticket->update(['status' => 'served']);
+
+        // Decrement position of all remaining waiting tickets
         $this->queue->tickets()
             ->where('status', 'waiting')
-            ->where('position', '>', $ticket->position)
+            ->where('position', '>', $savedPosition)
             ->decrement('position');
+
+        // Advance queue's current_position
+        $this->queue->increment('current_position');
+        $this->queue->refresh();
+
+        $this->message = "Marked #{$ticket->id} as served.";
+
+        broadcast(new QueueUpdated($this->queue));
+
+        $this->refreshTickets();
+
+        // 🔔 Send push notifications
+        $this->notifyUpcoming();
     }
-
-    broadcast(new \App\Events\QueueUpdated($this->queue))->toOthers();
-
-    $this->refreshTickets();
-
-    // 🔔 Send push notifications
-    $this->notifyUpcoming();
-}
 
     /**
      * Listen for real-time updates (e.g. when a customer joins from join page).

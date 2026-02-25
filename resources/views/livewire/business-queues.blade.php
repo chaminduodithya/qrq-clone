@@ -50,15 +50,21 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <a href="{{ route('dashboard.queue', $queue->slug) }}" wire:navigate
-                                class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition">
-                                Dashboard
-                            </a>
-                            <a href="{{ url('/join/' . $queue->slug) }}" target="_blank"
-                                class="rounded-xl bg-white/5 border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">
-                                Join Link ↗
-                            </a>
+                        <div class="flex items-center gap-3">
+                            {{-- QR Peek --}}
+                            <div class="hidden md:block bg-white p-1 rounded-lg">
+                                {!! QrCode::size(40)->generate(route('join.queue', $queue->slug)) !!}
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('dashboard.queue', $queue->slug) }}" wire:navigate
+                                    class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition">
+                                    Dashboard
+                                </a>
+                                <a href="{{ url('/join/' . $queue->slug) }}" target="_blank"
+                                    class="rounded-xl bg-white/5 border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">
+                                    Join Link ↗
+                                </a>
+                            </div>
                         </div>
                     </div>
                 @endforeach

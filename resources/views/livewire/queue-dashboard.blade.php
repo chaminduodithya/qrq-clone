@@ -1,5 +1,5 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4 md:p-8">
-    <div class="max-w-4xl mx-auto space-y-6">
+<div class="p-6 lg:p-10 bg-slate-950 min-h-screen">
+    <div class="max-w-7xl mx-auto space-y-8">
 
         {{-- ── Header ── --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -60,8 +60,16 @@
             </div>
         </div>
 
+        {{-- Message Display --}}
+        @if ($message)
+            <div
+                class="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4 text-center text-sm font-medium text-indigo-400">
+                {{ $message }}
+            </div>
+        @endif
+
         {{-- ── Call Next Button ── --}}
-        <button wire:click="next" @if ($tickets->isEmpty()) disabled @endif
+        <button wire:click="next"
             class="w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:scale-[1.005] active:scale-[0.995] transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-emerald-500/20 disabled:hover:scale-100"
             wire:loading.attr="disabled">
             <span wire:loading.remove wire:target="next" class="flex items-center justify-center gap-3">
@@ -126,18 +134,18 @@
                                     </td>
                                     <td class="px-5 py-3 text-slate-400">
                                         {{ \Carbon\Carbon::parse($ticket->joined_at)->diffForHumans() }}</td>
-                                    <td class="px-5 py-3 text-right">
-                                        <button wire:click="cancel({{ $ticket->id }})"
-                                            wire:confirm="Cancel ticket #{{ $ticket->id }}?"
-                                            class="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/20 hover:text-red-300 transition">
-                                            Cancel
-                                        </button>
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        <button wire:click="markServed({{ $ticket->id }})" 
+                                    <td class="px-5 py-3 text-right space-x-2">
+                                        <button wire:click="markServed({{ $ticket->id }})"
                                             wire:confirm="Mark {{ $ticket->name ?? 'this customer' }} as served?"
+                                            wire:loading.attr="disabled"
                                             class="rounded-lg bg-green-500/10 border border-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/20 hover:text-green-300 transition">
                                             Served
+                                        </button>
+                                        <button wire:click="cancel({{ $ticket->id }})"
+                                            wire:confirm="Cancel ticket #{{ $ticket->id }}?"
+                                            wire:loading.attr="disabled"
+                                            class="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/20 hover:text-red-300 transition">
+                                            Cancel
                                         </button>
                                     </td>
                                 </tr>
@@ -164,11 +172,19 @@
                                         {{ \Carbon\Carbon::parse($ticket->joined_at)->diffForHumans() }}</p>
                                 </div>
                             </div>
-                            <button wire:click="cancel({{ $ticket->id }})"
-                                wire:confirm="Cancel ticket #{{ $ticket->id }}?"
-                                class="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/20 transition shrink-0">
-                                Cancel
-                            </button>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button wire:click="markServed({{ $ticket->id }})"
+                                    wire:confirm="Mark {{ $ticket->name ?? 'this customer' }} as served?"
+                                    wire:loading.attr="disabled"
+                                    class="rounded-lg bg-green-500/10 border border-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/20 transition shrink-0">
+                                    Served
+                                </button>
+                                <button wire:click="cancel({{ $ticket->id }})"
+                                    wire:confirm="Cancel ticket #{{ $ticket->id }}?" wire:loading.attr="disabled"
+                                    class="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/20 transition shrink-0">
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     @endforeach
                 </div>

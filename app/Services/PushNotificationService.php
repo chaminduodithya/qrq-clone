@@ -14,6 +14,11 @@ class PushNotificationService
             return;
         }
 
+        if (!env('VAPID_PUBLIC_KEY') || !env('VAPID_PRIVATE_KEY')) {
+            \Illuminate\Support\Facades\Log::warning('VAPID keys are missing. Push notifications disabled.');
+            return;
+        }
+
         $auth = [
             'VAPID' => [
                 'subject' => config('app.url'),
