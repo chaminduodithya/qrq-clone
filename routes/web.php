@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\AdminLoginController;
 use App\Livewire\AdminOverview;
 use App\Livewire\BusinessCreate;
 use App\Livewire\BusinessQueues;
@@ -9,6 +10,7 @@ use App\Livewire\QueueCreate;
 use App\Livewire\QueueDashboard;
 use Illuminate\Support\Facades\Route;
 
+// ── Welcome ──
 Route::get('/', function () {
     return view('welcome');
 });
@@ -16,12 +18,18 @@ Route::get('/', function () {
 // ── Public: customer join page (no auth) ──
 Route::get('/join/{queue:slug}', JoinQueue::class)->name('join.queue');
 
-// ── Admin panel (auth required) ──
-Route::middleware(['auth'])->group(function () {
-    // Overview
-    Route::get('/admin', AdminOverview::class)->name('admin.dashboard');
+// ── Admin: public login routes ──
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
+});
 
-    // Redirect Breeze default /dashboard → /admin
+// ── Admin: protected routes (must be auth + admin role) ──
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    // Overview dashboard
+    Route::get('/', AdminOverview::class)->name('admin.dashboard');
+
+    // Redirect legacy /dashboard → /admin
     Route::get('/dashboard', fn () => redirect()->route('admin.dashboard'))->name('dashboard');
 
     // Businesses
@@ -32,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/business/{business:slug}/queues/create', QueueCreate::class)->name('business.create-queue');
 
     // Queue dashboard
-    Route::get('/dashboard/{queue:slug}', QueueDashboard::class)->name('dashboard.queue');
+    Route::get('/queue/{queue:slug}', QueueDashboard::class)->name('dashboard.queue');
 });
 
 // ── Profile (Breeze) ──

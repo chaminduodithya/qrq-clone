@@ -79,6 +79,32 @@ class QueueDashboard extends Component
         broadcast(new QueueUpdated($this->queue));
 
         $this->refreshTickets();
+
+        // 🔔 Send push notifications to the upcoming people
+        $this->notifyUpcoming();
+    }
+
+    /**
+     * Notify upcoming tickets about their new positions.
+     */
+    protected function notifyUpcoming(): void
+    {
+        $upcoming = $this->queue->tickets()
+            ->where('status', 'waiting')
+            ->orderBy('position')
+            ->limit(3)
+            ->get();
+
+        foreach ($upcoming as $ticket) {
+            if (!$ticket->push_subscription) continue;
+
+            $title = "Queue Update";
+            $body = $ticket->position === 1
+                ? "You are next! Please head to the counter."
+                : "Your position is now #{$ticket->position}. Please stay nearby.";
+
+            \App\Services\PushNotificationService::send($ticket, $title, $body);
+        }
     }
 
     /**
@@ -132,6 +158,9 @@ class QueueDashboard extends Component
     broadcast(new \App\Events\QueueUpdated($this->queue))->toOthers();
 
     $this->refreshTickets();
+
+    // 🔔 Send push notifications
+    $this->notifyUpcoming();
 }
 
     /**

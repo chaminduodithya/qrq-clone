@@ -11,6 +11,7 @@ use Livewire\Attributes\Url;  // ← add this (Livewire 3+)
 class JoinQueue extends Component
 {
     public Queue $queue;
+    public $pushSubscription = null;
 
     #[Url(as: 'ticket')]          // ← this makes ?ticket=... reactive in URL
     public $ticketId = null;
@@ -80,6 +81,15 @@ class JoinQueue extends Component
         broadcast(new \App\Events\QueueUpdated($this->queue))->toOthers();  
     }
 
+    public function savePushSubscription($subscription)
+    {
+        if ($this->ticket) {
+            $this->ticket->update([
+                'push_subscription' => $subscription
+            ]);
+        }
+    }
+
     // Optional: simple ETA (e.g. 5 min per person ahead)
     private function calculateETA()
     {
@@ -126,6 +136,6 @@ class JoinQueue extends Component
 
     public function render()
     {
-        return view('livewire.join-queue');
+        return view('livewire.join-queue')->layout('layouts.public');
     }
 }
