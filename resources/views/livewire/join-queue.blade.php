@@ -97,7 +97,7 @@
                     {{-- Name --}}
                     <div>
                         <label for="name" class="block text-sm font-medium text-slate-300 mb-1.5">Your Name <span
-                                class="text-slate-500">(optional)</span></label>
+                                class="text-slate-500"></span></label>
                         <input wire:model="name" type="text" id="name" placeholder="e.g. John Doe"
                             class="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition">
                         @error('name')
@@ -108,7 +108,7 @@
                     {{-- Phone (optional) --}}
                     <div>
                         <label for="phone" class="block text-sm font-medium text-slate-300 mb-1.5">
-                            Phone <span class="text-slate-500">(optional, for SMS)</span>
+                            Phone <span class="text-slate-500"></span>
                         </label>
                         <input wire:model="phone" type="tel" id="phone" placeholder="e.g. +94 77 123 4567"
                             class="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition">
