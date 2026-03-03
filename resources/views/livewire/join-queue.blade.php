@@ -81,6 +81,20 @@
                         </div>
                     </div>
 
+                    <!-- ── NEW: LEAVE QUEUE BUTTON ── -->
+                    <div class="mt-6 text-center">
+                        <button 
+                            wire:click="leaveQueue"
+                            wire:confirm="Are you sure you want to leave this queue? You can re-join immediately afterward."
+                            class="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 hover:text-red-300 font-medium text-sm transition-all duration-200"
+                        >
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Leave Queue
+                        </button>
+                    </div>
+
                     {{-- Refresh button --}}
                     <button wire:click="refreshPosition"
                         class="text-xs text-violet-400/60 hover:text-violet-400 transition underline underline-offset-4 decoration-violet-400/20">
@@ -182,7 +196,7 @@
                         applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
                     });
 
-                    await @this.call('savePushSubscription', subscription.toJSON());
+                    await this.$wire.savePushSubscription(subscription.toJSON());
                     this.subscribed = true;
                 } catch (error) {
                     console.error('Subscription failed:', error);

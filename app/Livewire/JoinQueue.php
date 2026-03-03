@@ -4,9 +4,10 @@ namespace App\Livewire;
 
 use App\Models\Queue;
 use App\Models\Ticket;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
-use Livewire\Component;  // ← add this (Livewire 3+)
+use Livewire\Component;
 
 class JoinQueue extends Component
 {
@@ -156,8 +157,47 @@ class JoinQueue extends Component
         }
     }
 
+    #[Layout('layouts.public')]
     public function render()
     {
-        return view('livewire.join-queue')->layout('layouts.public');
+        return view('livewire.join-queue');
+    }
+
+    public function leaveQueue()
+    {
+        if (!$this->ticket) {
+            return;
+        }
+
+        // Mark ticket as cancelled
+        $this->ticket->update([
+            'status' => 'cancelled',
+            // optional: 'cancelled_at' => now(),
+        ]);
+
+        // Optional: shift positions of people behind (if you want strict renumbering)
+        // Comment out if you prefer positions to stay "gapped"
+        $this->queue->tickets()
+            ->where('status', 'waiting')
+            ->where('position', '>', $this->ticket->position)
+            ->decrement('position');
+
+        // Broadcast so dashboard/public display update
+        broadcast(new \App\Events\QueueUpdated($this->queue))->toOthers();
+
+        // Clear current ticket state
+        $this->ticket = null;
+        $this->ticketId = null;
+        $this->position = null;
+        $this->estimatedWait = null;
+
+        // Optional: clear push subscription if you want
+        // $this->ticket->update(['push_subscription' => null]);
+
+        // Flash message (optional but nice UX)
+        session()->flash('status', 'You have left the queue. You can re-join below.');
+
+        // Redirect to clean join URL (removes ?ticket= param)
+        $this->redirect(route('join.queue', $this->queue->slug));
     }
 }

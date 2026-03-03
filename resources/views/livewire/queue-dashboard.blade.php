@@ -139,13 +139,13 @@
                                             wire:confirm="Mark {{ $ticket->name ?? 'this customer' }} as served?"
                                             wire:loading.attr="disabled"
                                             class="rounded-lg bg-green-500/10 border border-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/20 hover:text-green-300 transition">
-                                            Served
+                                            Mark as Served
                                         </button>
                                         <button wire:click="cancel({{ $ticket->id }})"
                                             wire:confirm="Cancel ticket #{{ $ticket->id }}?"
                                             wire:loading.attr="disabled"
                                             class="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/20 hover:text-red-300 transition">
-                                            Cancel
+                                            Cancel Queue Number
                                         </button>
                                     </td>
                                 </tr>

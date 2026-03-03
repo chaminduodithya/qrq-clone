@@ -8,9 +8,9 @@
 
                 {{-- Name --}}
                 <div>
-                    <label for="name" class="block text-sm font-medium text-slate-300 mb-1.5">Business Name</label>
+                    <label for="name" class="block text-sm font-medium text-slate-300 mb-1.5">Institute Name</label>
                     <input wire:model.live.debounce.300ms="name" type="text" id="name"
-                        placeholder="e.g. Chamindu Salon"
+                        placeholder="e.g. ABC Institute"
                         class="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition">
                     @error('name')
                         <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
@@ -21,8 +21,8 @@
                 <div>
                     <label for="slug" class="block text-sm font-medium text-slate-300 mb-1.5">Slug</label>
                     <div class="flex items-center gap-2">
-                        <span class="text-slate-500 text-sm">/business/</span>
-                        <input wire:model="slug" type="text" id="slug" placeholder="chamindu-salon"
+                        <span class="text-slate-500 text-sm">/institute/</span>
+                        <input wire:model="slug" type="text" id="slug" placeholder="abc-institute"
                             class="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition font-mono">
                     </div>
                     @error('slug')
