@@ -1,7 +1,7 @@
 <div class="p-4 md:p-8">
     <div class="max-w-lg mx-auto">
 
-        <h1 class="text-2xl font-bold text-white mb-6">Create New Business</h1>
+        <h1 class="text-2xl font-bold text-white mb-6">Create New Institute</h1>
 
         <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <form wire:submit="create" class="space-y-5">

@@ -52,13 +52,33 @@
                         </div>
                         <div class="flex items-center gap-3">
                             {{-- QR Peek --}}
-                            <div class="hidden md:block bg-white p-1 rounded-lg">
+                            {{-- <div class="hidden md:block bg-white p-1 rounded-lg">
                                 {!! QrCode::size(40)->generate(route('join.queue', $queue->slug)) !!}
-                            </div>
-                            <div class="flex items-center gap-2">
+                            </div> --}}
+                            <div class="flex flex-wrap items-center gap-2">
                                 <a href="{{ route('dashboard.queue', $queue->slug) }}" wire:navigate
                                     class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition">
                                     Dashboard
+                                </a>
+                                <a href="{{ route('queue.qr', $queue->slug) }}" wire:navigate
+                                    title="View & Print QR Code"
+                                    class="rounded-xl bg-violet-500/10 border border-violet-500/20 px-4 py-2 text-sm font-medium text-violet-400 hover:bg-violet-500/20 hover:text-violet-300 transition inline-flex items-center gap-1.5">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 18.75h.75v.75h-.75v-.75zM18.75 13.5h.75v.75h-.75v-.75zM18.75 18.75h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+                                    </svg>
+                                    QR Code
+                                </a>
+                                <a href="{{ route('display.queue', $queue->slug) }}" target="_blank"
+                                    title="Open Public Display Screen"
+                                    class="rounded-xl bg-sky-500/10 border border-sky-500/20 px-4 py-2 text-sm font-medium text-sky-400 hover:bg-sky-500/20 hover:text-sky-300 transition inline-flex items-center gap-1.5">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3" />
+                                    </svg>
+                                    Public Display ↗
                                 </a>
                                 <a href="{{ url('/join/' . $queue->slug) }}" target="_blank"
                                     class="rounded-xl bg-white/5 border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">

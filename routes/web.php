@@ -8,6 +8,7 @@ use App\Livewire\BusinessQueues;
 use App\Livewire\JoinQueue;
 use App\Livewire\QueueCreate;
 use App\Livewire\QueueDashboard;
+use App\Livewire\QueueQr;
 use Illuminate\Support\Facades\Route;
 use Livewire\View;
 
@@ -43,6 +44,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Queue dashboard
     Route::get('/dashboard/{queue:slug}', QueueDashboard::class)->name('dashboard.queue');
+
+    // Queue QR code page
+    Route::get('/queue/{queue:slug}/qr', QueueQr::class)->name('queue.qr');
 });
 
 // ── Profile (Breeze) ──
