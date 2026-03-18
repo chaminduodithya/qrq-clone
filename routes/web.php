@@ -29,7 +29,7 @@ Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin
 
 // ── Admin panel (auth required) ──
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Overview
+
     Route::get('/admin', AdminOverview::class)->name('admin.dashboard');
 
     // Redirect Breeze default /dashboard → /admin
